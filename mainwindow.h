@@ -11,6 +11,7 @@
 #include <QTableWidget>
 #include <QGridLayout>
 #include <QtWidgets>
+#include <QUsb>
 
 namespace Ui {
 class MainWindow;
@@ -26,9 +27,15 @@ public:
 
 private slots:
     void browse();
+    void onDevInserted(QtUsb::FilterList list);
+    void onDevRemoved(QtUsb::FilterList list);
 
 private:
+    // 表示モデルを用意
+    QStandardItemModel * model = new QStandardItemModel();
+
     Ui::MainWindow *ui;
+    QUsbManager *mUsbManager = new QUsbManager;
 };
 
 #endif // MAINWINDOW_H

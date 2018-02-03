@@ -7,8 +7,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // 表示モデルを用意
-    QStandardItemModel * model = new QStandardItemModel();
 
     // モデルの設定
     ui->DeviceList->setModel(model);
@@ -55,12 +53,43 @@ MainWindow::MainWindow(QWidget *parent) :
         layout->addWidget(tabWidget);
         ui->page->setLayout(layout);
     }
+
+    QObject::connect(mUsbManager, SIGNAL(deviceInserted(QtUsb::FilterList)),
+                     this, SLOT(onDevInserted(QtUsb::FilterList)));
+    QObject::connect(mUsbManager, SIGNAL(deviceRemoved(QtUsb::FilterList)), this,
+                     SLOT(onDevRemoved(QtUsb::FilterList)));
 }
 
 void MainWindow::browse()
 {
     QString directory =
         QDir::toNativeSeparators(QFileDialog::getExistingDirectory(this, tr("Find Files"), QDir::currentPath()));
+}
+
+void MainWindow::onDevInserted(QtUsb::FilterList list) {
+    QStandardItem * item = NULL;
+    QString text;
+    for (int i = 0; i < list.length(); i++) {
+        QtUsb::DeviceFilter f = list.at(i);
+        text.sprintf("V%04x:P%04x", f.vid, f.pid);
+        item = new QStandardItem;
+        Q_CHECK_PTR(item);
+        item->setText( text );
+        item->setEditable( false );
+        model->appendRow( item ); // リストビューはアイテムを列に追加
+    }
+}
+
+void MainWindow::onDevRemoved(QtUsb::FilterList list) {
+    QString text;
+    for (int i = 0; i < list.length(); i++) {
+        QtUsb::DeviceFilter f = list.at(i);
+        text.sprintf("V%04x:P%04x", f.vid, f.pid);
+        QList<QStandardItem *> items = model->findItems(text);
+        for(QStandardItem *x : items){
+            model->removeRow(x->row());
+        }
+    }
 }
 
 MainWindow::~MainWindow()
