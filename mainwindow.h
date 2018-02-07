@@ -11,7 +11,6 @@
 #include <QTableWidget>
 #include <QGridLayout>
 #include <QtWidgets>
-#include <QUsb>
 
 namespace Ui {
 class MainWindow;
@@ -37,7 +36,6 @@ private:
     QStandardItemModel * model = new QStandardItemModel();
 
     Ui::MainWindow *ui;
-    QUsbManager *mUsbManager = new QUsbManager;
 };
 
 #endif // MAINWINDOW_H
