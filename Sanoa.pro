@@ -26,10 +26,12 @@ include(ExternalLibrary/QtUSB/QtUsb.pri)
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    adddevice.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    adddevice.h
 
 FORMS += \
         mainwindow.ui

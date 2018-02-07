@@ -27,8 +27,10 @@ public:
 
 private slots:
     void browse();
-    void onDevInserted(QtUsb::FilterList list);
-    void onDevRemoved(QtUsb::FilterList list);
+    void addDevice();
+
+signals:
+    void sendDeviceInfo(QString name);
 
 private:
     // 表示モデルを用意

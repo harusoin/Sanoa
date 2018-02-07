@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "adddevice.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -11,8 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // モデルの設定
     ui->DeviceList->setModel(model);
     // 追加アイテムのテキストリスト
-    QStringList listItemText;
-    listItemText << "ライブラリ";
+    QString ItemText = tr("Library");
 
     // 設定モデルの取得
     model = qobject_cast<QStandardItemModel*>(ui->DeviceList->model());
@@ -24,40 +24,62 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsScene *scene;
     QGraphicsView *view;
     QWidget *widget;
-    foreach ( QString text, listItemText )
-    {
-        item = new QStandardItem;
-        Q_CHECK_PTR(item);
-        item->setText( text );
-        item->setEditable( false );
-        model->appendRow( item ); // リストビューはアイテムを列に追加
+    item = new QStandardItem;
+    Q_CHECK_PTR(item);
+    item->setText( ItemText );
+    item->setEditable( false );
+    model->appendRow( item ); // リストビューはアイテムを列に追加
 
-        tabWidget=new QTabWidget;
-        musictable=new QTableWidget;
-        musictable->setColumnCount(5);
-        musictable->setHorizontalHeaderLabels( QStringList() << tr("アルバム") << tr("番号") << tr("タイトル") << tr("アーティスト") << tr("長さ"));
-        scene=new QGraphicsScene;
-        view=new QGraphicsView(scene);
-        widget=new QWidget;
-        layout = new QGridLayout;
-        layout->addWidget(musictable);
-        widget->setLayout(layout);
-        tabWidget->addTab(widget, tr("曲"));
-        widget=new QWidget;
-        layout = new QGridLayout;
-        layout->addWidget(view);
-        widget->setLayout(layout);
-        tabWidget->addTab(widget, tr("アルバム"));
-        widget=new QWidget;
-        layout = new QGridLayout;
-        layout->addWidget(tabWidget);
-        ui->page->setLayout(layout);
+    tabWidget=new QTabWidget;
+    musictable=new QTableWidget;
+    musictable->setColumnCount(5);
+    musictable->setHorizontalHeaderLabels( QStringList() << tr("Album") << tr("Number") << tr("Title") << tr("Artist") << tr("Time"));
+    scene=new QGraphicsScene;
+    view=new QGraphicsView(scene);
+    widget=new QWidget;
+    layout = new QGridLayout;
+    layout->addWidget(musictable);
+    widget->setLayout(layout);
+    tabWidget->addTab(widget, tr("Music"));
+    widget=new QWidget;
+    layout = new QGridLayout;
+    layout->addWidget(view);
+    widget->setLayout(layout);
+    tabWidget->addTab(widget, tr("Album"));
+    widget=new QWidget;
+    layout = new QGridLayout;
+    layout->addWidget(tabWidget);
+    ui->page->setLayout(layout);
+
+
+    //以下テスト
+    QStorageInfo storage = QStorageInfo::root();
+
+    qDebug() << storage.rootPath();
+    if (storage.isReadOnly())
+        qDebug() << "isReadOnly:" << storage.isReadOnly();
+
+    qDebug() << "name:" << storage.name();
+    qDebug() << "device:" << storage.device();
+    qDebug() << "fileSystemType:" << storage.fileSystemType();
+    qDebug() << "size:" << storage.bytesTotal()/1000/1000 << "MB";
+    qDebug() << "availableSize:" << storage.bytesAvailable()/1000/1000 << "MB";
+    qDebug() << "--------------:";
+
+    foreach (const QStorageInfo &storage, QStorageInfo::mountedVolumes()) {
+        if (storage.isValid() && storage.isReady()) {
+            if (!storage.isReadOnly()) {
+                qDebug() << "name:" << storage.name();
+                qDebug() << "device:" << storage.device();
+                qDebug() << storage.rootPath();
+                qDebug() << "fileSystemType:" << storage.fileSystemType();
+                qDebug() << "size:" << storage.bytesTotal()/1000/1000 << "MB";
+                qDebug() << "availableSize:" << storage.bytesAvailable()/1000/1000 << "MB";
+                qDebug() << "blocksize:" << storage.blockSize();
+                qDebug() << "displyname:" << storage.displayName();
+            }
+        }
     }
-
-    QObject::connect(mUsbManager, SIGNAL(deviceInserted(QtUsb::FilterList)),
-                     this, SLOT(onDevInserted(QtUsb::FilterList)));
-    QObject::connect(mUsbManager, SIGNAL(deviceRemoved(QtUsb::FilterList)), this,
-                     SLOT(onDevRemoved(QtUsb::FilterList)));
 }
 
 void MainWindow::browse()
@@ -66,29 +88,14 @@ void MainWindow::browse()
         QDir::toNativeSeparators(QFileDialog::getExistingDirectory(this, tr("Find Files"), QDir::currentPath()));
 }
 
-void MainWindow::onDevInserted(QtUsb::FilterList list) {
-    QStandardItem * item = NULL;
-    QString text;
-    for (int i = 0; i < list.length(); i++) {
-        QtUsb::DeviceFilter f = list.at(i);
-        text.sprintf("V%04x:P%04x", f.vid, f.pid);
-        item = new QStandardItem;
-        Q_CHECK_PTR(item);
-        item->setText( text );
-        item->setEditable( false );
-        model->appendRow( item ); // リストビューはアイテムを列に追加
-    }
-}
+void MainWindow::addDevice()
+{
+    AddDevice aDevice;
 
-void MainWindow::onDevRemoved(QtUsb::FilterList list) {
-    QString text;
-    for (int i = 0; i < list.length(); i++) {
-        QtUsb::DeviceFilter f = list.at(i);
-        text.sprintf("V%04x:P%04x", f.vid, f.pid);
-        QList<QStandardItem *> items = model->findItems(text);
-        for(QStandardItem *x : items){
-            model->removeRow(x->row());
-        }
+    if (aDevice.exec()) {
+        QString name = aDevice.nameText->text();
+
+        emit sendDeviceInfo(name);
     }
 }
 

@@ -33,6 +33,13 @@
       </property>
      </widget>
     </item>
+    <item row="2" column="0">
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>Add Device</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -54,7 +61,7 @@
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>ファイル</string>
+     <string>File</string>
     </property>
     <addaction name="actiontest"/>
    </widget>
@@ -63,14 +70,32 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actiontest">
    <property name="text">
-    <string>開く</string>
+    <string>Open</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>addDevice()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>87</x>
+     <y>339</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>87</x>
+     <y>526</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
   <slot>browse()</slot>
+  <slot>addDevice()</slot>
  </slots>
 </ui>
