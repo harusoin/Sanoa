@@ -8,9 +8,9 @@ AddDevice::AddDevice(QWidget *parent) : QDialog(parent)
     QTableWidget *deviceTable;
     QVBoxLayout *layout;
 
-    nameLabel = new QLabel("DeviceList");
-    okButton = new QPushButton("OK");
-    cancelButton = new QPushButton("Cancel");
+    nameLabel = new QLabel(tr("DeviceList"));
+    okButton = new QPushButton(tr("OK"));
+    cancelButton = new QPushButton(tr("Cancel"));
 
     tabWidget=new QTabWidget;
     deviceTable=new QTableWidget;

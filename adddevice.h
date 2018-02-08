@@ -2,6 +2,7 @@
 #define SANOA_ADDDEVICE_H
 
 #include <QDialog>
+#include "libmtp.h"
 
 QT_BEGIN_NAMESPACE
 class QLabel;

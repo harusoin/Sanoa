@@ -36,7 +36,7 @@
     <item row="2" column="0">
      <widget class="QPushButton" name="pushButton">
       <property name="text">
-       <string>Add Device</string>
+       <string>Add a Device</string>
       </property>
      </widget>
     </item>
