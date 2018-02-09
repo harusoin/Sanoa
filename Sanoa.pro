@@ -26,16 +26,11 @@ DEFINES += PROJECT_DIRECTORY=\\\"$$PWD\\\"
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    adddevice.cpp \
-    adddevice.cpp \
-    main.cpp \
-    mainwindow.cpp
+    adddevice.cpp
 
 HEADERS += \
         mainwindow.h \
-    adddevice.h \
-    adddevice.h \
-    mainwindow.h
+    adddevice.h
 
 FORMS += \
         mainwindow.ui
@@ -48,7 +43,7 @@ DISTFILES += \
 
 macx{
 INCLUDEPATH += /usr/local/Cellar/libmtp/1.1.14/include/
-LIBS += -L/usr/local/Cellar/libmtp/1.1.14/lib/
+LIBS += -L/usr/local/Cellar/libmtp/1.1.14/lib/ -lmtp
 }
 
 TRANSLATIONS = translations/Sanoa_ja.ts

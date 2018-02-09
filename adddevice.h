@@ -9,6 +9,7 @@ class QLabel;
 class QPushButton;
 class QTextEdit;
 class QLineEdit;
+class QTableWidget;
 QT_END_NAMESPACE
 
 class AddDevice : public QDialog
@@ -21,10 +22,12 @@ public:
     QTextEdit *addressText;
 
 private:
+    void resizeEvent(QResizeEvent *event);
     QLabel *nameLabel;
     QLabel *addressLabel;
     QPushButton *okButton;
     QPushButton *cancelButton;
+    QTableWidget *deviceTable;
 };
 
 #endif // SANOA_ADDDEVICE_H
