@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>643</width>
-    <height>388</height>
+    <width>927</width>
+    <height>548</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,18 +18,7 @@
     <item row="0" column="1">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="page"/>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QListView" name="DeviceList">
-      <property name="maximumSize">
-       <size>
-        <width>150</width>
-        <height>16777215</height>
-       </size>
+       <number>-1</number>
       </property>
      </widget>
     </item>
@@ -37,6 +26,19 @@
      <widget class="QPushButton" name="pushButton">
       <property name="text">
        <string>Add a Device</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="DeviceTreeWidget" name="DeviceList">
+      <property name="maximumSize">
+       <size>
+        <width>150</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="headerHidden">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -55,7 +57,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>643</width>
+     <width>927</width>
      <height>22</height>
     </rect>
    </property>
@@ -75,6 +77,17 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>DeviceTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>devicetreewidget.h</header>
+   <slots>
+    <signal>currentIDChanged(int)</signal>
+    <slot>currentItemChangedToID(QTreeWidgetItem*)</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -84,12 +97,44 @@
    <slot>addDevice()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>87</x>
-     <y>339</y>
+     <x>93</x>
+     <y>516</y>
     </hint>
     <hint type="destinationlabel">
      <x>87</x>
      <y>526</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>DeviceList</sender>
+   <signal>currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</signal>
+   <receiver>DeviceList</receiver>
+   <slot>currentItemChangedToID(QTreeWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>115</x>
+     <y>169</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>133</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>DeviceList</sender>
+   <signal>currentIDChanged(int)</signal>
+   <receiver>stackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>91</x>
+     <y>403</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>245</x>
+     <y>386</y>
     </hint>
    </hints>
   </connection>

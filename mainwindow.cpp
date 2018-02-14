@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "adddevice.h"
+#include "mtpdevicepage.h"
+#include "standarddevicepage.h"
+#include "devicetreewidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -8,48 +11,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
-    // モデルの設定
-    ui->DeviceList->setModel(model);
-    // 追加アイテムのテキストリスト
-    QString ItemText = tr("Library");
-
-    // 設定モデルの取得
-    model = qobject_cast<QStandardItemModel*>(ui->DeviceList->model());
-    // テキストアイテムの追加
-    QStandardItem * item = NULL;
-    QTabWidget *tabWidget;
-    QTableWidget *musictable;
-    QGridLayout *layout;
-    QGraphicsScene *scene;
-    QGraphicsView *view;
-    QWidget *widget;
-    item = new QStandardItem;
-    Q_CHECK_PTR(item);
-    item->setText( ItemText );
-    item->setEditable( false );
-    model->appendRow( item ); // リストビューはアイテムを列に追加
-
-    tabWidget=new QTabWidget;
-    musictable=new QTableWidget;
-    musictable->setColumnCount(5);
-    musictable->setHorizontalHeaderLabels( QStringList() << tr("Album") << tr("Number") << tr("Title") << tr("Artist") << tr("Time"));
-    scene=new QGraphicsScene;
-    view=new QGraphicsView(scene);
-    widget=new QWidget;
-    layout = new QGridLayout;
-    layout->addWidget(musictable);
-    widget->setLayout(layout);
-    tabWidget->addTab(widget, tr("Music"));
-    widget=new QWidget;
-    layout = new QGridLayout;
-    layout->addWidget(view);
-    widget->setLayout(layout);
-    tabWidget->addTab(widget, tr("Album"));
-    widget=new QWidget;
-    layout = new QGridLayout;
-    layout->addWidget(tabWidget);
-    ui->page->setLayout(layout);
+    ui->DeviceList->setColumnCount(1);
+    DevicePage *page =new StandardDevicePage;
+    page->setDeviceInfo();
+    page->setUI(ui->stackedWidget,ui->DeviceList);
+    devicePages.append(page);
 
 
     //以下テスト
@@ -91,11 +57,25 @@ void MainWindow::browse()
 void MainWindow::addDevice()
 {
     AddDevice aDevice;
+    DevicePage *page;
 
     if (aDevice.exec()) {
-        QString name = aDevice.nameText->text();
-
-        emit sendDeviceInfo(name);
+        switch (aDevice.selectedDeviceType) {
+        case DEVICETYPE_NULL:
+            break;
+        case DEVICETYPE_STANDARD:
+            page=new StandardDevicePage;
+            page->setDeviceInfo(aDevice.selectedStandardStorage);
+            page->setUI(ui->stackedWidget,ui->DeviceList);
+            devicePages.append(page);
+            break;
+        case DEVICETYPE_MTP:
+            page=new MtpDevicePage;
+            page->setDeviceInfo(aDevice.selectedMtpStorage);
+            page->setUI(ui->stackedWidget,ui->DeviceList);
+            devicePages.append(page);
+            break;
+        }
     }
 }
 

@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QLibraryInfo>
 #include <QTranslator>
+#include "libmtp.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,6 +13,8 @@ int main(int argc, char *argv[])
     if(qtTranslator.load("Sanoa_" + QLocale::system().name(),qmFilesPath))a.installTranslator(&qtTranslator);
     QTranslator qtTranslator2;
     if(qtTranslator2.load("qt_" + QLocale::system().name(),QLibraryInfo::location(QLibraryInfo::TranslationsPath)))a.installTranslator(&qtTranslator2);
+
+    LIBMTP_Init();
 
     MainWindow w;
     w.show();

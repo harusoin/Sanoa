@@ -26,11 +26,20 @@ DEFINES += PROJECT_DIRECTORY=\\\"$$PWD\\\"
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    adddevice.cpp
+    adddevice.cpp \
+    devicepage.cpp \
+    mtpdevicepage.cpp \
+    standarddevicepage.cpp \
+    devicetreewidget.cpp
 
 HEADERS += \
         mainwindow.h \
-    adddevice.h
+    adddevice.h \
+    devicepage.h \
+    defines.h \
+    mtpdevicepage.h \
+    standarddevicepage.h \
+    devicetreewidget.h
 
 FORMS += \
         mainwindow.ui

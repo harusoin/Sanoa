@@ -3,6 +3,9 @@
 
 #include <QDialog>
 #include "libmtp.h"
+#include <QStorageInfo>
+#include <QMap>
+#include "defines.h"
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -16,18 +19,26 @@ class AddDevice : public QDialog
 {
     Q_OBJECT
 
+private slots:
+    void setDeviceInfo();
+
 public:
     AddDevice(QWidget *parent = 0);
-    QLineEdit *nameText;
-    QTextEdit *addressText;
+    ~AddDevice();
+    DeviceType selectedDeviceType;
+    QStorageInfo selectedStandardStorage;
+    MTP_STORAGE_ID_t selectedMtpStorage;
 
 private:
     void resizeEvent(QResizeEvent *event);
-    QLabel *nameLabel;
-    QLabel *addressLabel;
     QPushButton *okButton;
     QPushButton *cancelButton;
+    QLabel *nameLabel;
     QTableWidget *deviceTable;
+    LIBMTP_raw_device_t *rawdevices;
+    QMap<int, DeviceType> deviceTypeMap;
+    QMap<int, QStorageInfo> standardStorageMap;
+    QMap<int, MTP_STORAGE_ID_t> mtpStorageMap;
 };
 
 #endif // SANOA_ADDDEVICE_H

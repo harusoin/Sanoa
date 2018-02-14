@@ -4,13 +4,13 @@
 #include <QMainWindow>
 #include <QDir>
 #include <QFileDialog>
-#include <QStandardItemModel>
 #include <QTextEdit>
 #include <QGraphicsView>
-#include <QTableView>
 #include <QTableWidget>
 #include <QGridLayout>
 #include <QtWidgets>
+#include <QVector>
+#include "devicepage.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,13 +29,12 @@ private slots:
     void addDevice();
 
 signals:
-    void sendDeviceInfo(QString name);
 
 private:
     // 表示モデルを用意
-    QStandardItemModel * model = new QStandardItemModel();
 
     Ui::MainWindow *ui;
+    QVector<DevicePage*>devicePages;
 };
 
 #endif // MAINWINDOW_H

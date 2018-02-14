@@ -4,14 +4,12 @@
 
 AddDevice::AddDevice(QWidget *parent) : QDialog(parent)
 {
-    QTabWidget *tabWidget;
     QVBoxLayout *layout;
 
     nameLabel = new QLabel(tr("DeviceList"));
     okButton = new QPushButton(tr("OK"));
     cancelButton = new QPushButton(tr("Cancel"));
 
-    tabWidget=new QTabWidget;
     deviceTable=new QTableWidget;
     deviceTable->setColumnCount(3);
     deviceTable->setRowCount(10);
@@ -38,16 +36,16 @@ AddDevice::AddDevice(QWidget *parent) : QDialog(parent)
             deviceTable->setItem( row, 1, new QTableWidgetItem(availablesize));
             deviceTable->setItem( row, 2, new QTableWidgetItem(totalsize));
             deviceTable->setRowHeight( row, 20 );
+            deviceTypeMap[row]=DEVICETYPE_STANDARD;
+            standardStorageMap[row]=storage;
             row++;
         }
     }
 
-    LIBMTP_raw_device_t * rawdevices;
     int numrawdevices;
     LIBMTP_error_number_t err;
     int i;
 
-    LIBMTP_Init();
     err = LIBMTP_Detect_Raw_Devices(&rawdevices, &numrawdevices);
     if(err==LIBMTP_ERROR_NONE) {
         for (i = 0; i < numrawdevices; i++) {
@@ -59,33 +57,25 @@ AddDevice::AddDevice(QWidget *parent) : QDialog(parent)
             }
             LIBMTP_Clear_Errorstack(mtpDevice);
             QString modelName = QString("%1").arg(LIBMTP_Get_Modelname(mtpDevice));
-            LIBMTP_devicestorage_t *mtpStorage;
             if(0!=LIBMTP_Get_Storage(mtpDevice,LIBMTP_STORAGE_SORTBY_NOTSORTED))
             {
                 qDebug() << "LIBMTP_Get_Storage()";
                 LIBMTP_Clear_Errorstack(mtpDevice);
                 continue;
             }
-            for (mtpStorage = mtpDevice->storage; mtpStorage != 0; mtpStorage = mtpStorage->next) {
-                QString devicename = QString("%1/%2").arg(modelName).arg(mtpStorage->StorageDescription);
-                availablesize = QString("%1MB").arg(mtpStorage->FreeSpaceInBytes/1000/1000);
-                totalsize = QString("%1MB").arg(mtpStorage->MaxCapacity/1000/1000);
-                deviceTable->setItem( row, 0, new QTableWidgetItem(devicename));
-                deviceTable->setItem( row, 1, new QTableWidgetItem(availablesize));
-                deviceTable->setItem( row, 2, new QTableWidgetItem(totalsize));
-                deviceTable->setRowHeight( row, 20 );
-                row++;
-            }
-
-            qDebug() << LIBMTP_Get_Modelname(mtpDevice);
+            deviceTable->setItem( row, 0, new QTableWidgetItem(modelName));
+            deviceTable->setRowHeight( row, 20 );
+            deviceTypeMap[row]=DEVICETYPE_MTP;
+            mtpStorageMap[row].busno=rawdevices[i].bus_location;
+            mtpStorageMap[row].devno=rawdevices[i].devnum;
+            row++;
             LIBMTP_Release_Device(mtpDevice);
         }
     }
-    free(rawdevices);
 
 
     deviceTable->setRowCount(row);
-    deviceTable->setCurrentItem(deviceTable->item( 0, 0 ));
+    selectedDeviceType=DEVICETYPE_NULL;
 
 
     layout = new QVBoxLayout;
@@ -100,6 +90,7 @@ AddDevice::AddDevice(QWidget *parent) : QDialog(parent)
 
     setLayout(layout);
 
+    connect(deviceTable, &QTableWidget::itemSelectionChanged, this, &AddDevice::setDeviceInfo);
     connect(okButton, &QAbstractButton::clicked, this, &QDialog::accept);
     connect(cancelButton, &QAbstractButton::clicked, this, &QDialog::reject);
 
@@ -108,4 +99,23 @@ AddDevice::AddDevice(QWidget *parent) : QDialog(parent)
 void AddDevice::resizeEvent(QResizeEvent *event) {
 
     QDialog::resizeEvent(event);
+}
+void AddDevice::setDeviceInfo(){
+    int currentrow=deviceTable->currentRow();
+    selectedDeviceType=deviceTypeMap[currentrow];
+    switch (selectedDeviceType) {
+    case DEVICETYPE_STANDARD:
+        selectedStandardStorage=standardStorageMap[currentrow];
+        break;
+    case DEVICETYPE_MTP:
+        selectedMtpStorage=mtpStorageMap[currentrow];
+        break;
+    case DEVICETYPE_NULL:
+        break;
+    }
+
+}
+AddDevice::~AddDevice()
+{
+    free(rawdevices);
 }
