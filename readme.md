@@ -11,10 +11,11 @@ This project is launched to make a generic music manager.
 - Fast
 - multi-platform(Windows,macOS,Linux)
 - Free
+- MTP support
 
 ## Requirement
 
-- Qt
+- Qt,libmtp,taglib
 
 ## Author
 
