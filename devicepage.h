@@ -17,9 +17,6 @@ class DevicePage : public QObject
     Q_OBJECT
 public:
     explicit DevicePage(QObject *parent = nullptr);
-    virtual int setDeviceInfo() = 0;
-    virtual int setDeviceInfo(MTP_STORAGE_ID_t storageInfo) = 0;
-    virtual int setDeviceInfo(QStorageInfo storageInfo) = 0;
     virtual int setUI(QStackedWidget *stackedWidget,DeviceTreeWidget *listWidget) = 0;
 
 signals:

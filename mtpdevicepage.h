@@ -11,8 +11,6 @@ public:
     explicit MtpDevicePage(QObject *parent = nullptr);
     ~MtpDevicePage();
     int setDeviceInfo(MTP_STORAGE_ID_t storageInfo);
-    int setDeviceInfo();
-    int setDeviceInfo(QStorageInfo storageInfo);
     int setUI(QStackedWidget *stackedWidget,DeviceTreeWidget *listWidget);
 private:
     QVector<LIBMTP_devicestorage_t*> mountedMtpStorageInfo;

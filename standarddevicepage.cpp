@@ -30,11 +30,6 @@ int StandardDevicePage::setDeviceInfo(QStorageInfo storageInfo)
     return 0;
 }
 
-int StandardDevicePage::setDeviceInfo(MTP_STORAGE_ID_t storageInfo)
-{
-    return -1;
-}
-
 int StandardDevicePage::setUI(QStackedWidget *stackedWidget, DeviceTreeWidget *listWidget)
 {
     if(mountedDeviceType==DEVICETYPE_NULL)return -1;

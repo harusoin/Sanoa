@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->DeviceList->setColumnCount(1);
-    DevicePage *page =new StandardDevicePage;
+    StandardDevicePage *page =new StandardDevicePage;
     page->setDeviceInfo();
     page->setUI(ui->stackedWidget,ui->DeviceList);
     devicePages.append(page);
@@ -57,23 +57,24 @@ void MainWindow::browse()
 void MainWindow::addDevice()
 {
     AddDevice aDevice;
-    DevicePage *page;
+    StandardDevicePage *sdpage;
+    MtpDevicePage *mdpage;
 
     if (aDevice.exec()) {
         switch (aDevice.selectedDeviceType) {
         case DEVICETYPE_NULL:
             break;
         case DEVICETYPE_STANDARD:
-            page=new StandardDevicePage;
-            page->setDeviceInfo(aDevice.selectedStandardStorage);
-            page->setUI(ui->stackedWidget,ui->DeviceList);
-            devicePages.append(page);
+            sdpage=new StandardDevicePage;
+            sdpage->setDeviceInfo(aDevice.selectedStandardStorage);
+            sdpage->setUI(ui->stackedWidget,ui->DeviceList);
+            devicePages.append(sdpage);
             break;
         case DEVICETYPE_MTP:
-            page=new MtpDevicePage;
-            page->setDeviceInfo(aDevice.selectedMtpStorage);
-            page->setUI(ui->stackedWidget,ui->DeviceList);
-            devicePages.append(page);
+            mdpage=new MtpDevicePage;
+            mdpage->setDeviceInfo(aDevice.selectedMtpStorage);
+            mdpage->setUI(ui->stackedWidget,ui->DeviceList);
+            devicePages.append(mdpage);
             break;
         }
     }

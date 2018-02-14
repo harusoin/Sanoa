@@ -10,7 +10,6 @@ public:
     explicit StandardDevicePage(QObject *parent = nullptr);
     int setDeviceInfo();
     int setDeviceInfo(QStorageInfo storageInfo);
-    int setDeviceInfo(MTP_STORAGE_ID_t storageInfo);
     int setUI(QStackedWidget *stackedWidget,DeviceTreeWidget *listWidget);
 private:
     QStorageInfo mountedStandardStorageInfo;
