@@ -30,7 +30,8 @@ SOURCES += \
     devicepage.cpp \
     mtpdevicepage.cpp \
     standarddevicepage.cpp \
-    devicetreewidget.cpp
+    devicetreewidget.cpp \
+    musictagmodel.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +40,8 @@ HEADERS += \
     defines.h \
     mtpdevicepage.h \
     standarddevicepage.h \
-    devicetreewidget.h
+    devicetreewidget.h \
+    musictagmodel.h
 
 FORMS += \
         mainwindow.ui

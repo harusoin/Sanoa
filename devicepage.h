@@ -17,6 +17,7 @@ class DevicePage : public QObject
     Q_OBJECT
 public:
     explicit DevicePage(QObject *parent = nullptr);
+    void setScannedDirPathes(QStringList pathes);
     virtual int setUI(QStackedWidget *stackedWidget,DeviceTreeWidget *listWidget) = 0;
 
 signals:
@@ -26,6 +27,7 @@ protected:
     DeviceType mountedDeviceType;
     QString mountedDeviceName;
     QVector<QString> mountedStorageName;
+    QStringList scannedDirRelativePath;
 };
 
 #endif // DEVICEPAGE_H

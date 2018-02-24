@@ -1,6 +1,7 @@
 #ifndef STANDARDDEVICEPAGE_H
 #define STANDARDDEVICEPAGE_H
 #include "devicepage.h"
+#include "musictagmodel.h"
 
 
 class StandardDevicePage : public DevicePage
@@ -13,6 +14,7 @@ public:
     int setUI(QStackedWidget *stackedWidget,DeviceTreeWidget *listWidget);
 private:
     QStorageInfo mountedStandardStorageInfo;
+    void scanMusicDir(QFileInfoList fileList);
 };
 
 #endif // STANDARDDEVICEPAGE_H

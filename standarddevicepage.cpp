@@ -10,6 +10,11 @@ StandardDevicePage::StandardDevicePage(QObject *parent) : DevicePage(parent)
 
 }
 
+void StandardDevicePage::scanMusicDir(QFileInfoList fileList)
+{
+
+}
+
 int StandardDevicePage::setDeviceInfo()
 {
     if(mountedDeviceType!=DEVICETYPE_NULL)return -1;
@@ -64,6 +69,20 @@ int StandardDevicePage::setUI(QStackedWidget *stackedWidget, DeviceTreeWidget *l
     musictable=new QTableWidget;
     musictable->setColumnCount(5);
     musictable->setHorizontalHeaderLabels( QStringList() << tr("Album") << tr("Number") << tr("Title") << tr("Artist") << tr("Time"));
+
+    for(int i = 0;i < scannedDirPath.size();++i)
+    {
+        /*
+        QDir scannedDir(QString("%1/%3").arg(mountedStandardStorageInfo.rootPath()).arg(scannedDirPath.at(i)));
+        scannedDir.setFilter(QDir::Hidden | QDir::NoSymLinks);
+        scanMusicDir(scannedDir.entryInfoList());
+        */
+        MusicTagModel *scannedDir = new MusicTagModel;
+        scannedDir->setRootPath(mountedStandardStorageInfo.rootPath());
+        scannedDir->setFilter(QDir::Filter);
+    }
+
+
     scene=new QGraphicsScene;
     view=new QGraphicsView;
     view->setScene(scene);

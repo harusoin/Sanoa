@@ -1,7 +1,6 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 #include "libmtp.h"
-
 enum DeviceType{
     DEVICETYPE_NULL,
     DEVICETYPE_STANDARD,
