@@ -4,15 +4,34 @@
 #include <QGraphicsView>
 #include <QGridLayout>
 #include <QLabel>
+#include "tag.h"
 
 StandardDevicePage::StandardDevicePage(QObject *parent) : DevicePage(parent)
 {
-
+    scannedDirRelativePath << "Music";
 }
 
 void StandardDevicePage::scanMusicDir(QFileInfoList fileList)
 {
-
+    TagLib::FileRef *musicFileTemp;
+    QListIterator<QFileInfo> iterator_list(fileList);
+    while (iterator_list.hasNext())
+    {
+        QFileInfo fi = iterator_list.next();
+        if ( !(fi.fileName() == "..") && !(fi.fileName() == ".") )
+        {
+            if (fi.isFile())
+            {
+                musicFileTemp = new TagLib::FileRef(argv[i]);
+            }
+            else if (fi.isDir())
+            {
+                dir.cd(fi.fileName());
+                qDebugFileName( dir );
+                dir = original_dir;
+            }
+        }
+    }
 }
 
 int StandardDevicePage::setDeviceInfo()
@@ -70,16 +89,16 @@ int StandardDevicePage::setUI(QStackedWidget *stackedWidget, DeviceTreeWidget *l
     musictable->setColumnCount(5);
     musictable->setHorizontalHeaderLabels( QStringList() << tr("Album") << tr("Number") << tr("Title") << tr("Artist") << tr("Time"));
 
-    for(int i = 0;i < scannedDirPath.size();++i)
+    for(int i = 0;i < scannedDirRelativePath.size();++i)
     {
-        /*
-        QDir scannedDir(QString("%1/%3").arg(mountedStandardStorageInfo.rootPath()).arg(scannedDirPath.at(i)));
+        QDir scannedDir(QString("%1/%2").arg(mountedStandardStorageInfo.rootPath()).arg(scannedDirPath.at(i)));
         scannedDir.setFilter(QDir::Hidden | QDir::NoSymLinks);
         scanMusicDir(scannedDir.entryInfoList());
-        */
+        /*
         MusicTagModel *scannedDir = new MusicTagModel;
         scannedDir->setRootPath(mountedStandardStorageInfo.rootPath());
         scannedDir->setFilter(QDir::Filter);
+        */
     }
 
 
