@@ -4,15 +4,23 @@
 #include <QGraphicsView>
 #include <QGridLayout>
 #include <QLabel>
-#include "tag.h"
+#include <QDebug>
+
+#include "taglib/fileref.h"
+#include "taglib/tag.h"
+#include "taglib/tpropertymap.h"
 
 StandardDevicePage::StandardDevicePage(QObject *parent) : DevicePage(parent)
 {
     scannedDirRelativePath << "Music";
 }
 
-void StandardDevicePage::scanMusicDir(QFileInfoList fileList)
+void StandardDevicePage::scanMusicDir(QDir scannedDir)
 {
+    qDebug() << scannedDir.absolutePath();
+    QStringList fsi = scannedDir.entryList();
+    qDebug() << fsi.size();
+    QFileInfoList fileList = scannedDir.entryInfoList();
     TagLib::FileRef *musicFileTemp;
     QListIterator<QFileInfo> iterator_list(fileList);
     while (iterator_list.hasNext())
@@ -22,13 +30,37 @@ void StandardDevicePage::scanMusicDir(QFileInfoList fileList)
         {
             if (fi.isFile())
             {
-                musicFileTemp = new TagLib::FileRef(argv[i]);
+                musicFileTemp = new TagLib::FileRef(scannedDir.absoluteFilePath(fi.fileName()).toLocal8Bit());
+                if(!musicFileTemp->isNull() && musicFileTemp->tag()) {
+
+                  TagLib::Tag *tag = musicFileTemp->tag();
+
+                  qDebug() << "-- TAG (basic) --";
+                  qDebug() << "title   - \"" << QString::fromStdString(tag->title().to8Bit())   << "\"";
+                  qDebug() << "artist  - \"" << QString::fromStdString(tag->artist().to8Bit())  << "\"";
+                  qDebug() << "album   - \"" << QString::fromStdString(tag->album().to8Bit())   << "\"";
+                  qDebug() << "year    - \"" << tag->year()    << "\"";
+                  qDebug() << "comment - \"" << QString::fromStdString(tag->comment().to8Bit()) << "\"";
+                  qDebug() << "track   - \"" << tag->track()   << "\"";
+                  qDebug() << "genre   - \"" << QString::fromStdString(tag->genre().to8Bit())   << "\"";
+
+                  TagLib::PropertyMap tags = musicFileTemp->file()->properties();
+
+                  unsigned int longest = 0;
+                  for(TagLib::PropertyMap::ConstIterator i = tags.begin(); i != tags.end(); ++i) {
+                    if (i->first.size() > longest) {
+                      longest = i->first.size();
+                    }
+                  }
+
+                }
             }
             else if (fi.isDir())
             {
-                dir.cd(fi.fileName());
-                qDebugFileName( dir );
-                dir = original_dir;
+                if(scannedDir.cd(fi.fileName())){
+                    scanMusicDir(scannedDir);
+                    scannedDir.cdUp();
+                }
             }
         }
     }
@@ -89,16 +121,14 @@ int StandardDevicePage::setUI(QStackedWidget *stackedWidget, DeviceTreeWidget *l
     musictable->setColumnCount(5);
     musictable->setHorizontalHeaderLabels( QStringList() << tr("Album") << tr("Number") << tr("Title") << tr("Artist") << tr("Time"));
 
+    QDir scannedDir(mountedStandardStorageInfo.rootPath());
+//    scannedDir.setFilter(QDir::NoSymLinks);
     for(int i = 0;i < scannedDirRelativePath.size();++i)
     {
-        QDir scannedDir(QString("%1/%2").arg(mountedStandardStorageInfo.rootPath()).arg(scannedDirPath.at(i)));
-        scannedDir.setFilter(QDir::Hidden | QDir::NoSymLinks);
-        scanMusicDir(scannedDir.entryInfoList());
-        /*
-        MusicTagModel *scannedDir = new MusicTagModel;
-        scannedDir->setRootPath(mountedStandardStorageInfo.rootPath());
-        scannedDir->setFilter(QDir::Filter);
-        */
+        if(scannedDir.cd(scannedDirRelativePath.at(i))){
+            scanMusicDir(scannedDir);
+            scannedDir.cdUp();
+        }
     }
 
 

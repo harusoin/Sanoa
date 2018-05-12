@@ -6,7 +6,7 @@ MusicTagItem::MusicTagItem(const QList<QVariant> &data, MusicTagItem *parentItem
     m_itemData = data;
 }
 
-MusicTagItem::~TreeItem()
+MusicTagItem::~MusicTagItem()
 {
     qDeleteAll(m_childItems);
 }

@@ -14,7 +14,7 @@ public:
     int setUI(QStackedWidget *stackedWidget,DeviceTreeWidget *listWidget);
 private:
     QStorageInfo mountedStandardStorageInfo;
-    void scanMusicDir(QFileInfoList fileList);
+    void scanMusicDir(QDir scannedDir);
 };
 
 #endif // STANDARDDEVICEPAGE_H

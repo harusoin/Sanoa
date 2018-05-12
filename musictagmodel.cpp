@@ -2,8 +2,6 @@
 
 MusicTagModel::MusicTagModel(QObject* parent) : QAbstractItemModel(parent)
 {
-    deviceRootPath="";
-
     QList<QVariant> rootData;
     rootData << tr("Album") << tr("Number") << tr("Title") << tr("Artist") << tr("Time");
     rootItem = new MusicTagItem(rootData);

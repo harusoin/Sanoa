@@ -55,9 +55,9 @@ DISTFILES += \
     translations/Sanoa_ja.ts
 
 macx{
-INCLUDEPATH += /usr/local/Cellar/libmtp/1.1.14/include/ \
-    /usr/local/Cellar/taglib/1.11.1/include/taglib
-LIBS += -L/usr/local/Cellar/libmtp/1.1.14/lib/ -lmtp \
+INCLUDEPATH += /usr/local/Cellar/libmtp/1.1.15/include/ \
+    /usr/local/Cellar/taglib/1.11.1/include/
+LIBS += -L/usr/local/Cellar/libmtp/1.1.15/lib/ -lmtp \
     -L/usr/local/Cellar/taglib/1.11.1/lib/ -ltag
 }
 
